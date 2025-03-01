@@ -1,68 +1,79 @@
-<title> Registration Form</title>
-<style>
-    input#name:invalid {
-        border: 1px solid red;
-    }
-</style>
-<style>
-    input#email:invalid {
-        border: 1px solid red;
-    }
-</style>
 
+    <html lang="en">
 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registration Form</title>
+    </head>
 
+    <body>
+        <h2>Registration Form</h2>
+        <form id="registration-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required><br><br>
+            <label for="terms">Accepted terms?</label>
+            <input type="checkbox" id="terms" name="terms"><br><br>
+            <button type="submit">Submit</button>
+        </form>
+        <h2>Submitted Data</h2>
+        <table border="1" id="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Dob</th>
+                    <th>Accepted terms?</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
 
+        <script>
+            document.getElementById('registration-form').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form submission
 
-<body>
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const dob = new Date(document.getElementById('dob').value);
+                const terms = document.getElementById('terms').checked ? 'true' : 'false';
 
+                // Validate DOB
+                const today = new Date();
+                const minAge = 18;
+                const maxAge = 55;
+                const minDate = new Date(today.getFullYear() - maxAge, today.getMonth(), today.getDate());
+                const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
 
-    <form id="user-form">
-        <label for="name">Name</label>
-        <input required type="text" id="name" name="name">
+                if (dob < minDate || dob > maxDate) {
+                    alert(`Date of birth must be between ${minAge} and ${maxAge} years.`);
+                    return;
+                }
 
-        <label for="email">Email</label>
-        <input required type="email" id="email" name="email">
+                // Add data to table
+                const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+                newRow.insertCell(0).innerText = name;
+                newRow.insertCell(1).innerText = email;
+                newRow.insertCell(2).innerText = password;
+                newRow.insertCell(3).innerText = document.getElementById('dob').value;
+                newRow.insertCell(4).innerText = terms;
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password">
+                // Reset form
+                document.getElementById('registration-form').reset();
+            });
+        </script>
+            <script src="./index.js"></script>
+    </body>
 
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" name="dob">
-
-        <input type="checkbox" id="acceptTerms" name="acceptTerms">
-        <label for="acceptTerms">Accept Terms & Conditions</label>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <script src="./index.js"></script>
-    
-
-
-<script>
-        // Calculate minimum and maximum dates for age 18 and 55
-        const today = new Date();
-        const minAge = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-        const maxAge = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate());
-
-        // Format the dates to 'YYYY-MM-DD'
-        const formatDate = (date) => {
-            const d = new Date(date);
-            let month = '' + (d.getMonth() + 1);
-            let day = '' + d.getDate();
-            const year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        };
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const dobInput = document.getElementById('dob');
-            dobInput.min = formatDate(maxAge);
-            dobInput.max = formatDate(minAge);
-        });
-    </script>
-</body>
+    </html>
