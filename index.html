@@ -36,6 +36,20 @@
     </table>
     
     <script>
+        function loadTableData() {
+            const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+            table.innerHTML = ''; // Clear existing table data
+            const data = JSON.parse(localStorage.getItem('formData')) || [];
+            data.forEach(entry => {
+                const newRow = table.insertRow();
+                newRow.insertCell(0).innerText = entry.name;
+                newRow.insertCell(1).innerText = entry.email;
+                newRow.insertCell(2).innerText = entry.password;
+                newRow.insertCell(3).innerText = entry.dob;
+                newRow.insertCell(4).innerText = entry.terms;
+            });
+        }
+
         document.getElementById('registration-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form submission
             
@@ -64,24 +78,21 @@
                 alert("Please enter a valid email address.");
                 return;
             }
-            
-            // Add data to table
-            const table = document.getElementById('data-table').getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow();
-            newRow.insertCell(0).innerText = name;
-            newRow.insertCell(1).innerText = email;
-            newRow.insertCell(2).innerText = password;
-            newRow.insertCell(3).innerText = document.getElementById('dob').value;
-            newRow.insertCell(4).innerText = terms;
+
+            // Store form data in localStorage
+            const formData = JSON.parse(localStorage.getItem('formData')) || [];
+            formData.push({ name, email, password, dob: document.getElementById('dob').value, terms });
+            localStorage.setItem('formData', JSON.stringify(formData));
+
+            // Load table data
+            loadTableData();
             
             // Reset form
             document.getElementById('registration-form').reset();
         });
 
         window.onload = function() {
-            // Ensure table headers are displayed
-            const table = document.getElementById('data-table').getElementsByTagName('thead')[0];
-            table.style.display = 'table-header-group';
+            loadTableData(); // Load table data on page load
         };
     </script>
         <script src="./index.js"></script>
